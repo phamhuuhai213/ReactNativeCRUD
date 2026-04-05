@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { addProduct, updateProduct } from '../services/productService';
 import { fetchProductImage, pickImageFromLibrary } from '../services/imageService';
+import { scanProductImage } from '../services/aiService';
+import { Alert } from 'react-native';
 
 export const useProductForm = () => {
   const params = useLocalSearchParams();
@@ -16,6 +18,7 @@ export const useProductForm = () => {
     hinhanh: '',
   });
   const [loading, setLoading] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
   const [showCategory, setShowCategory] = useState(false);
 
   // Load hinhanh from Firestore when editing (avoid passing base64 via params)
@@ -30,10 +33,28 @@ export const useProductForm = () => {
   const pickImage = async () => {
     setLoading(true);
     const imageUri = await pickImageFromLibrary();
+    setLoading(false);
+
     if (imageUri) {
       setForm((prev) => ({ ...prev, hinhanh: imageUri }));
+      
+      // Tự động chạy quét AI sau khi chọn ảnh
+      setIsScanning(true);
+      const aiResult = await scanProductImage(imageUri);
+      setIsScanning(false);
+      
+      if (aiResult) {
+        setForm((prev) => ({
+          ...prev,
+          idsanpham: aiResult.idsanpham || prev.idsanpham,
+          tensp: aiResult.tensp || prev.tensp,
+          loaisp: aiResult.loaisp || prev.loaisp,
+          gia: aiResult.gia || prev.gia,
+        }));
+      } else {
+        Alert.alert("Lỗi AI", "Không thể tự động điền thông tin. Vui lòng kiểm tra lại API Key.");
+      }
     }
-    setLoading(false);
   };
 
   const saveProduct = async () => {
@@ -50,7 +71,7 @@ export const useProductForm = () => {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.replace('/(admin)');
+      router.replace('/(screens)');
     }
   };
 
@@ -58,6 +79,7 @@ export const useProductForm = () => {
     form,
     setForm,
     loading,
+    isScanning,
     showCategory,
     setShowCategory,
     isEditing,

@@ -8,7 +8,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthProvider, useAuth } from '@/components/AuthContext';
 
 export const unstable_settings = {
-  anchor: '(admin)',
+  anchor: '(screens)',
 };
 
 function InitialLayout() {
@@ -20,12 +20,12 @@ function InitialLayout() {
   useEffect(() => {
     if (loading) return;
 
-    const inAdminGroup = segments[0] === '(admin)';
+    const inScreensGroup = segments[0] === '(screens)';
 
     if (!user) {
       router.replace('/login');
-    } else if (user && !inAdminGroup) {
-      router.replace('/(admin)');
+    } else if (user && !inScreensGroup) {
+      router.replace('/(screens)');
     }
   }, [user, loading]);
 
@@ -36,7 +36,7 @@ function InitialLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+        <Stack.Screen name="(screens)" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="add-product" options={{ headerShown: false, presentation: 'modal' }} />
       </Stack>

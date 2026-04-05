@@ -14,7 +14,7 @@ export const pickImageFromLibrary = async (): Promise<string | null> => {
     const asset = result.assets[0];
     return asset.base64 ? `data:image/jpeg;base64,${asset.base64}` : asset.uri;
   }
-  
+
   return null;
 };
 

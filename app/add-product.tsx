@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -14,6 +14,7 @@ export default function AddProduct() {
     form,
     setForm,
     loading,
+    isScanning,
     showCategory,
     setShowCategory,
     isEditing,
@@ -48,6 +49,14 @@ export default function AddProduct() {
         loading={loading}
         onPickImage={pickImage}
       />
+
+      {/* Thông báo AI đang quét */}
+      {isScanning && (
+        <View style={styles.scanningContainer}>
+          <ActivityIndicator size="small" color="#8b5cf6" />
+          <Text style={styles.scanningText}>🤖 AI đang phân tích và tự điền ảnh...</Text>
+        </View>
+      )}
 
       {/* Form Fields */}
       <FormInput
@@ -155,5 +164,20 @@ const styles = StyleSheet.create({
   dropdownPlaceholder: {
     fontSize: 15,
     color: AppColors.textPlaceholder,
+  },
+  scanningContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: Spacing.md,
+    paddingVertical: Spacing.sm,
+    backgroundColor: '#ede9fe', // Nhạt của màu tím 8b5cf6
+    borderRadius: Radius.md,
+  },
+  scanningText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: '#6d28d9',
+    fontWeight: '600',
   },
 });

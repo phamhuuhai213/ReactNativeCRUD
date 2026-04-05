@@ -27,7 +27,7 @@ export default function LoginScreen() {
     try {
       if (isLogin) {
         await loginUser(email, password);
-        router.replace('/(admin)');
+        router.replace('/(screens)');
       } else {
         await registerUser(email, password);
         Alert.alert('Thành công', 'Đăng ký thành công!');
